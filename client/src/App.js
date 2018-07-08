@@ -7,6 +7,8 @@ class App extends Component {
     api_url: 'https://api-staging.stasher.com/v1/stashpoints',
     api_url_filtered: '',
     stashpoints: [],
+    current_lat: '',
+    current_lon: '',
     assoc_id: '',
     active: '',
     twentyfour_seven: '',
@@ -31,6 +33,21 @@ class App extends Component {
           console.log(err);
         })
       );
+
+    const success = position => {
+      this.setState({ current_lat: position.coords.latitude });
+      this.setState({ current_lon: position.coords.longitude });
+    };
+
+    const error = msg => {
+      console.log(msg);
+    };
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(success, error);
+    } else {
+      error('not supported');
+    }
   }
 
   handleChange = e => {
@@ -46,7 +63,9 @@ class App extends Component {
 
   createQuery = e => {
     e.preventDefault();
-    let filters = this.state.api_url + '?centre_lat=51.4831763&centre_lon=-0.2702527&'; // This would normally be achieved via Geolocation.getCurrentPosition()
+    let filters =
+      this.state.api_url +
+      `?centre_lat=${this.state.current_lat}&centre_lon=${this.state.current_lon}&`;
 
     if (this.state.assoc_id) {
       filters += `assoc_id=${this.state.assoc_id}&`;
