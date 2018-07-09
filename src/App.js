@@ -28,11 +28,10 @@ class App extends Component {
       method: 'GET',
     })
       .then(res => res.json())
-      .then(stashpoints =>
-        this.setState({ stashpoints }).catch(err => {
-          console.log(err);
-        })
-      );
+      .then(stashpoints => this.setState({ stashpoints }))
+      .catch(err => {
+        console.log(err);
+      });
 
     const success = position => {
       this.setState({ current_lat: position.coords.latitude });
